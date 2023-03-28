@@ -4,7 +4,17 @@ const app = express()
 const port = 3000
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+//跨域解决
+app.all('*', function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild')
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS')
+    if (req.method == 'OPTIONS') {
+        res.send(200)
+    } else {
+        next()
+    }
+})
 app.post('/api/getTallyAll', async (req, res) => {
     //按照日期筛选
     const query = req.body
