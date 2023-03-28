@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-const uri = "mongodb://admin:010294@43.139.63.14:27017/qydtallybook"; ``
+const uri = "mongodb://admin:010294@43.139.63.14:27017/qydtallybook"; //数据库地址
 export async function readDb(query) {
     //查询数据库中集合的数据并返回
     const page = query.page
@@ -84,6 +84,10 @@ export async function statisticsDb(data) {
             { $match: data },
             { $group: { _id: "$remark", total: { $sum: "$amount" } } }
         ]).toArray();
+        //查询结果按照total大小排序
+        result.sort((a, b) => {
+            return b.total - a.total
+        })
         return result
     } catch (e) {
         console.error(e);
