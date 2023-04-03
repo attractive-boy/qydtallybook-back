@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { ObjectId } from 'mongodb';
 const uri = "mongodb://admin:010294@43.139.63.14:27017/qydtallybook"; //数据库地址
 export async function readDb(query) {
     //查询数据库中集合的数据并返回
@@ -67,6 +68,7 @@ export async function deleteDb(data) {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
+        // id转换为ObjectId
         const result = await collection.deleteOne({ _id: ObjectId(id) });
         return result
     } catch (e) {
