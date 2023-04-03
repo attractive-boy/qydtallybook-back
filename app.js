@@ -46,7 +46,7 @@ app.post('/api/getTallyCount', async (req, res) => {
     res.send(await statisticsDb(data))
 })
 
-app.post('/api/login', async (req, res) => {
+app.get('/api/login', async (req, res) => {
     // GET https://api.weixin.qq.com/sns/jscode2session 
     const { code } = req.body
     const url = `https://api.weixin.qq.com/sns/jscode2session`
