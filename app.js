@@ -1,6 +1,6 @@
 import express from 'express'
 import { readDb, writeDb, updateDb, deleteDb, statisticsDb } from './mongodb.js'
-import http from 'http'
+import axios from 'axios'
 const app = express()
 const port = 3000
 app.use(express.json());
@@ -57,18 +57,8 @@ app.get('/api/login', async (req, res) => {
     const secret = '789ece2fd52e73268c356cc3a79efe0f'
     const grant_type = 'authorization_code'
     const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${code}&grant_type=${grant_type}`
-    http.get(url, (response) => {
-        let data = '';
-        response.on('data', (chunk) => {
-            data += chunk;
-        });
-        response.on('end', () => {
-            res.send(data)
-        });
-    }).on('error', (err) => {
-        console.log('Error: ' + err.message);
-    }
-    );
+    const result = await axios.get(url)
+    res.send(result.data)
 })
 
 app.listen(port, () => {
