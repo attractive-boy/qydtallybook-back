@@ -45,19 +45,20 @@ app.post('/api/getTallyCount', async (req, res) => {
     const data = req.body
     res.send(await statisticsDb(data))
 })
-
 app.get('/api/login', async (req, res) => {
     // GET https://api.weixin.qq.com/sns/jscode2session 
-    const { code } = req.body
-    const url = `https://api.weixin.qq.com/sns/jscode2session`
-    const params = {
-        appid: 'wx4e22a2efdf4efb81',
-        secret: '789ece2fd52e73268c356cc3a79efe0f',
-        js_code: code,
-        grant_type: 'authorization_code'
-    }
-    const result = await axios.get(url, { params })
-    res.send(result.data)
+    // ?appid=APPID
+    // &secret=SECRET
+    // &js_code=JSCODE
+    // &grant_type=authorization_code
+    const code = req.query.code
+    const appid = 'wx4e22a2efdf4efb81'
+    const secret = '789ece2fd52e73268c356cc3a79efe0f'
+    const grant_type = 'authorization_code'
+    const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${code}&grant_type=${grant_type}`
+    const result = await fetch(url)
+    const data = await result.json()
+    res.send(data)
 })
 
 app.listen(port, () => {
