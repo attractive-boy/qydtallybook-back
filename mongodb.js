@@ -62,13 +62,12 @@ export async function updateDb(data) {
 
 export async function deleteDb(data) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const { id, openid } = data
-    //根据id删除数据
+    const { id } = data
     try {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
-        const result = await collection.deleteOne({ _id: id, openid: openid });
+        const result = await collection.deleteOne({ _id: id });
         return result
     } catch (e) {
         console.error(e);
