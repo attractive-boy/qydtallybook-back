@@ -1,6 +1,6 @@
 import express from 'express'
 import { readDb, writeDb, updateDb, deleteDb, statisticsDb } from './mongodb.js'
-const http = require('http');
+import http from 'http'
 const app = express()
 const port = 3000
 app.use(express.json());
