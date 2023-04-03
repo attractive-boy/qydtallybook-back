@@ -7,15 +7,19 @@ export async function readDb(query) {
     const skip = (page - 1) * limit
     delete query.page
     delete query.limit
+    //如果有时间限制，就按照时间限制查询
+    const { date } = query
+    if (date) {
+        query.date = { $gte: date[0], $lte: date[1] }
+    }
     //分页查询
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
-        const cursor = collection.find(query).skip(skip).limit(limit).sort({ date: -1 });
-        const result = await cursor.toArray();
-        return result
+        const result = await collection.find(query).skip(skip).limit(limit).toArray();
+        return result;
     }
     catch (e) {
         console.error(e);
@@ -56,14 +60,15 @@ export async function updateDb(data) {
     }
 }
 
-export async function deleteDb(id) {
+export async function deleteDb(data) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    const { id, openid } = data
     //根据id删除数据
     try {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
-        const result = await collection.deleteOne({ _id: id });
+        const result = await collection.deleteOne({ _id: id, openid: openid });
     } catch (e) {
         console.error(e);
     }
