@@ -67,7 +67,8 @@ export async function deleteDb(data) {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
-        const result = await collection.deleteOne(data);
+        const result = await collection.findOneAndDelete(data);
+        return result
     } catch (e) {
         console.error(e);
     }
