@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb';
-import { ObjectId } from 'mongodb';
 // uuidv4() 生成唯一id
 import { v4 as uuidv4 } from 'uuid';
 const uri = "mongodb://admin:010294@43.139.63.14:27017/qydtallybook"; //数据库地址
@@ -10,11 +9,14 @@ export async function readDb(query) {
     const skip = (page - 1) * limit
     delete query.page
     delete query.limit
+    // {"startdate":"2023-04-03","enddate":"2023-04-03","remark":"测试系统","openid":"o-mTJ5L_3L3nXzCJiPO5t5F5Atzk","page":1,"limit":10}
     //如果有时间限制，就按照时间限制查询
-    const { date } = query
-    if (date) {
-        query.date = { $gte: date[0], $lte: date[1] }
+    const { startdate, enddate } = query
+    if (startdate && enddate) {
+        query.date = { $gte: startdate, $lte: enddate }
     }
+    delete query.startdate
+    delete query.enddate
     //分页查询
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
@@ -34,7 +36,7 @@ export async function readDb(query) {
 
 export async function writeDb(data) {
     // 生成唯一id
-    data.id = uuidv4()
+    data.uuid = uuidv4()
     //将数据写入数据库
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
@@ -67,13 +69,13 @@ export async function updateDb(data) {
 
 export async function deleteDb(data) {
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    const { id } = data
+    const { uuid, openid } = data
     try {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
-        //删除数据
-        const result = await collection.findOneAndDelete({ id: id });
+        //删除数据并返回删除的数据
+        const result = await collection.findOneAndDelete({ uuid, openid });
         return result
     } catch (e) {
         console.error(e);
