@@ -1,5 +1,7 @@
 import { MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
+// uuidv4() 生成唯一id
+import { v4 as uuidv4 } from 'uuid';
 const uri = "mongodb://admin:010294@43.139.63.14:27017/qydtallybook"; //数据库地址
 export async function readDb(query) {
     //查询数据库中集合的数据并返回
@@ -31,6 +33,8 @@ export async function readDb(query) {
 }
 
 export async function writeDb(data) {
+    // 生成唯一id
+    data.id = uuidv4()
     //将数据写入数据库
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
@@ -68,10 +72,8 @@ export async function deleteDb(data) {
         await client.connect();
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
-        // new一个ObjectId
-        const _id = new ObjectId(id)
         //删除数据
-        const result = await collection.find({ _id }).deleteOne();
+        const result = await collection.deleteOne({ id });
         return result
     } catch (e) {
         console.error(e);
