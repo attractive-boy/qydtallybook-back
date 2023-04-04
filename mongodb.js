@@ -73,7 +73,7 @@ export async function deleteDb(data) {
         const database = client.db("qydtallybook");
         const collection = database.collection("tallys");
         //删除数据
-        const result = await collection.deleteOne({ id });
+        const result = await collection.findOneAndDelete({ id: id });
         return result
     } catch (e) {
         console.error(e);
