@@ -70,7 +70,7 @@ export async function deleteDb(data) {
         const collection = database.collection("tallys");
         // new一个ObjectId
         const _id = new ObjectId(id)
-        const result = await collection.deleteOne({ _id });
+        const result = await collection.deleteMany({ _id });
         return result
     } catch (e) {
         console.error(e);
