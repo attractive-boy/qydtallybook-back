@@ -58,6 +58,7 @@ app.get('/api/login', async (req, res) => {
     const grant_type = 'authorization_code'
     const url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${code}&grant_type=${grant_type}`
     const result = await axios.get(url)
+    delete result.data.session_key
     res.send(result.data)
 })
 
